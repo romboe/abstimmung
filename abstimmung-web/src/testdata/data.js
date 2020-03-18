@@ -1,5 +1,5 @@
 export const voting = {
-    enabledRow: 1,
+    enabledRow: 2,
     rows: [
         ['','gelb','rot','blau','gruen'],
         ['roman',true,false,true,false],

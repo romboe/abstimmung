@@ -1,13 +1,18 @@
 import React from 'react';
 import './App.css';
-import Table from './components/Table';
-import {voting} from './testdata/data.js';
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import Voting from './components/Voting';
+
 
 function App() {
   return (
-    <div className="App">
-      <Table data={voting}></Table>
-    </div>
+    <Router>
+      <div className="App">
+      </div>
+      <Switch>
+         <Route path="/:id" component={Voting}/> 
+      </Switch>
+    </Router>
   );
 }
 

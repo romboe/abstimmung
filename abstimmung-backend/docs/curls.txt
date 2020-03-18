@@ -1,0 +1,1 @@
+curl -X PUT -H "Content-Type: application/json" -d "{\"votingId\": \"e305cba6-06b4-435b-9ca6-918f3751feab\", \"userId\": \"dcc0e8a1-6b54-4544-a151-2d84382dafc3\", \"optionId\": 1, \"value\": \"1\"}" http://localhost:8080/votes

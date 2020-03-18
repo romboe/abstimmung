@@ -2,6 +2,7 @@ package at.romboe.abstimmung;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ public class Service {
 
 
 	public Voting getVoting(String uuid) {
-		return votingRepo.findById(uuid);
+		return votingRepo.findById(UUID.fromString(uuid));
 	}
 
 	public List<Voting> getAllVotings() {
@@ -36,6 +37,7 @@ public class Service {
 		Optional<User> o = userRepo.findById(id);
 		return o.isPresent() ? o.get() : null;
 	}
+	
 
 	public User findUserByEmail(String email) {
 		return userRepo.findByEmail(email);

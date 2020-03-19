@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
+import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
 import at.romboe.abstimmung.model.client.Vote;
 
@@ -103,6 +104,14 @@ public class Controller {
 		}
 
 		service.saveVoting(voting);
+
+		return ResponseEntity.ok().build();
+	}
+
+
+	public ResponseEntity<String> invite(@RequestBody Invitation invitation) throws IOException {
+
+		service.invite(invitation);
 
 		return ResponseEntity.ok().build();
 	}

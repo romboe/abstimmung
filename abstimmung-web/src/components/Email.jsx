@@ -39,9 +39,10 @@ function Email() {
                             <button name={i} onClick={removeRecipient}>-</button>
                         </div>
                     </div>
-                </div>)}
-            <button onClick={addRecipient}>Hinzufuegen</button>
-            <button onClick={sendInvitation}>Einladung senden</button>
+                </div>
+            )}
+            <div><button onClick={addRecipient}>Hinzufuegen</button></div>
+            <div><button onClick={sendInvitation} style={{marginTop:'40px'}}>Einladung senden</button></div>
         </div>
     );
 }

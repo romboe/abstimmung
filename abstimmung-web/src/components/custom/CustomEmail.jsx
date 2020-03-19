@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
 
-function CustomEmail() {
-    const [state, setState] = useState('');
+function CustomEmail(props) {
+    const [state, setState] = useState(props.value);
+
     const change = (e) => {
-        setState(e.target.value);
-        // props.changeHandler();
+        const val = e.target.value;
+        setState(val);
+        props.changeHandler(props.index, val);
     }
+
     return(
         <div>
             Email <input type="text" onChange={change} value={state}></input>

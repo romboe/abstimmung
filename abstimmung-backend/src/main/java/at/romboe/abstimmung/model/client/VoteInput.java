@@ -3,9 +3,9 @@ package at.romboe.abstimmung.model.client;
 import lombok.Data;
 
 @Data
-public class Vote {
+public class VoteInput {
 	private String votingId;
-	private String userId;
+	private String voterId;
 	private Integer optionIndex;
 	private Boolean value;
 }

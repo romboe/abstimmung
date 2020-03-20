@@ -11,7 +11,7 @@ function App() {
       <div className="App">
       </div>
       <Switch>
-         <Route path="/voting/:id" component={Voting}/> 
+         <Route path="/votings/:id" component={Voting}/> 
          <Route path="/mail" component={Email}/> 
       </Switch>
     </Router>

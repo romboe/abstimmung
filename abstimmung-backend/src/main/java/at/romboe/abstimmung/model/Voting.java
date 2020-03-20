@@ -1,13 +1,10 @@
 package at.romboe.abstimmung.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,7 +28,7 @@ public class Voting {
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private List<Option> options;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	private Map<String, User> voters = new LinkedHashMap<>(); // LinkedHashMap keeps order of insertion
+	private Map<String, User> voters;
 
 
 	public Voting() {

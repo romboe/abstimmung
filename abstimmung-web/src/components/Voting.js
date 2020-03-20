@@ -17,11 +17,11 @@ function Voting() {
       // https://www.robinwieruch.de/react-hooks-fetch-data
       console.log("MOuntie " +id);
       const fetchData = async () => {
-        const [votingId, userId] = id.split(':');
-        const response = await getVoting(votingId, userId);
+        const [votingId, voterId] = id.split(':');
+        const response = await getVoting(votingId, voterId);
         if (response) {
           let obj = response.data;
-          Object.assign(obj, {votingId, userId});
+          Object.assign(obj, {votingId, voterId});
           console.log(obj);
 
           dispatch(initVoting(obj));

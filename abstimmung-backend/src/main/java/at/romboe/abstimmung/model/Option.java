@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 import lombok.Data;
 
@@ -18,7 +18,7 @@ public class Option {
 	@GeneratedValue
 	private Long id;
 	private String name;
-	@OneToMany
+	@ManyToMany
 	private Set<User> voters = new HashSet<>();
 
 	public Option() {

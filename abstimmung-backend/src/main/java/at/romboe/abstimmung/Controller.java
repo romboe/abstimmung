@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
+import at.romboe.abstimmung.model.client.ChangeUserNameInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
-import at.romboe.abstimmung.model.client.Vote;
+import at.romboe.abstimmung.model.client.VoteInput;
 
 @CrossOrigin(origins="http://localhost:3002")
 @RestController
@@ -29,16 +31,30 @@ public class Controller {
 	private Service service;
 
 
+	@GetMapping(value="/admin/votings")
+	public ResponseEntity<List<Voting>> getAllVotings() throws IOException {
+		List<Voting> votings = service.findAllVotings();
+		return ResponseEntity.ok(votings);
+	}
+
+
 	@GetMapping(value="/{id}")
 	public ResponseEntity<Response> getVoting(@PathVariable String id) throws IOException {
 		Response response = new Response();
 		response.setName("" + id);
 
-		String[] p = id.split(":");
-		String votingId = p[0];
-		String userId = p[1];
+		String votingId = null;
+		String voterId = null;
+		try {
+			String[] p = id.split(":");
+			votingId = p[0];
+			voterId = p[1];
+		}
+		catch(Exception e) {
+			throw new IllegalArgumentException();
+		}
 
-		Voting voting = service.getVoting(votingId);
+		Voting voting = service.findVoting(votingId);
 
 		List<List<String>> rows = new ArrayList<>();
 
@@ -55,7 +71,7 @@ public class Controller {
 			i++; // we start with 1 as the first row (index=0) are the option names
 
 			String uuid = e.getKey();
-			if (uuid.equals(userId)) {
+			if (uuid.equals(voterId)) {
 				enabledRow = i;
 			}
 
@@ -77,34 +93,8 @@ public class Controller {
 
 
 	@PutMapping(value="/votes")
-	public ResponseEntity<String> vote(@RequestBody Vote vote) throws IOException {
-		String votingId = vote.getVotingId();
-		String userId = vote.getUserId();
-		int optionIndex = vote.getOptionIndex();
-		boolean value = vote.getValue();
-
-		Voting voting = service.getVoting(votingId);
-
-		User user = voting.getVoters().get(userId);
-
-		// Option option = voting.getOptions().stream().filter(o -> o.getId().equals(optionId)).findFirst().orElse(null);
-		Option option = null;
-		for (int i=0; i<voting.getOptions().size(); i++) {
-			if (i == optionIndex) {
-				option = voting.getOptions().get(i);
-				break;
-			}
-		}
-
-		if (value) {
-			option.getVoters().add(user);
-		}
-		else {
-			option.getVoters().remove(user);
-		}
-
-		service.saveVoting(voting);
-
+	public ResponseEntity<String> vote(@RequestBody VoteInput input) throws IOException {
+		service.vote(input);
 		return ResponseEntity.ok().build();
 	}
 
@@ -112,6 +102,14 @@ public class Controller {
 	public ResponseEntity<String> invite(@RequestBody Invitation invitation) throws IOException {
 
 		service.invite(invitation);
+
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/users")
+	public ResponseEntity<String> changeUserName(@RequestBody ChangeUserNameInput input) throws IOException {
+
+		service.changeUserName(input);
 
 		return ResponseEntity.ok().build();
 	}

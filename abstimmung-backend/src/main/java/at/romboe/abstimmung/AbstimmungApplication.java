@@ -22,23 +22,22 @@ public class AbstimmungApplication {
 		Service service = context.getBean(Service.class);
 		Voting v = new Voting("badheizkoerper");
 		v.setDescription("eine erste Umfrage");
-		v = service.saveVoting(v);
 
 		// add options
 		List<Option> options = new ArrayList<>();
 		options.add(new Option("Eins"));
 		options.add(new Option("Zwei"));
 		v.setOptions(options);
-		v = service.saveVoting(v);
 
 		// send invitations
 		Map<String,User> map = new LinkedHashMap<>();
 		map.put(UUID.randomUUID().toString(), new User("hallo@servus.at"));
 		map.put(UUID.randomUUID().toString(), new User("Kasperl", "petzi@baer.at"));
+		map.put(UUID.randomUUID().toString(), new User("Jane", "jane@tarzan.at"));
 		v.setVoters(map);
 		v = service.saveVoting(v);
 
-		for (Voting v1:service.getAllVotings()) {
+		for (Voting v1:service.findAllVotings()) {
 			System.out.println(v1.dump());
 		}
 

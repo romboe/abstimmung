@@ -6,6 +6,6 @@ import lombok.Data;
 public class ChangeUserNameInput {
 
 	private String votingId;
-	private String voterId;
+	private String userId;
 	private String name;
 }

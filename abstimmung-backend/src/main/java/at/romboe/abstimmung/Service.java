@@ -1,11 +1,12 @@
 package at.romboe.abstimmung;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
@@ -39,11 +40,6 @@ public class Service {
 		return votingRepo.save(v);
 	}
 
-	public User findUser(long id) {
-		Optional<User> o = userRepo.findById(id);
-		return o.isPresent() ? o.get() : null;
-	}
-
 	public User findUserByEmail(String email) {
 		return userRepo.findByEmail(email);
 	}
@@ -56,9 +52,8 @@ public class Service {
 
 		Voting voting = findVoting(votingId);
 
-		User user = voting.getVoters().get(voterId);
+		User user = findUserInVoting(voting, voterId);
 
-		// Option option = voting.getOptions().stream().filter(o -> o.getId().equals(optionId)).findFirst().orElse(null);
 		Option option = null;
 		for (int i=0; i<voting.getOptions().size(); i++) {
 			if (i == optionIndex) {
@@ -89,21 +84,43 @@ public class Service {
 			mailService.sendSimpleMessage(email, "Hallo", "Guten Tag");
 
 			// if sending was successful put user into voter list
-			if (!voting.getVoters().containsValue(user)) {
-				voting.getVoters().put(UUID.randomUUID().toString(), user);
-			}
+			voting.getVoters().add(user);
 		}
 	}
 
 	public void changeUserName(ChangeUserNameInput input) {
-		String votingId = input.getVotingId();
-		String voterId = input.getVoterId();
-
-		Voting v = findVoting(votingId);
-		User user = v.getVoters().get(voterId);
-
+		Voting voting = findVoting(input.getVotingId());
+		// we are only allowed to change the name if the user belongs to the voting
+		User user = findUserInVoting(voting, input.getUserId());
 		user.setName(input.getName());
-
 		userRepo.save(user);
+	}
+
+	private User findUserInVoting(Voting voting, String userId) {
+		return voting.getVoters().stream().filter(x -> x.getId().toString().equals(userId)).findFirst().get();
+	}
+
+	@Transactional
+	public String dump(UUID votingId) {
+		Voting v = votingRepo.findById(votingId);
+		StringBuilder sb = new StringBuilder();
+		sb.append("=============================================").append("\n");
+		sb.append(v.getId()+ " " + v.getName()).append("\n");
+		sb.append("- Description -------------------------------").append("\n");
+		sb.append(v.getDescription()).append("\n");
+		sb.append("- Options -----------------------------------").append("\n");
+		for (Option o:v.getOptions()) {
+			sb.append(o.getName()).append("\n");
+		}
+		sb.append("- Voters ------------------------------------").append("\n");
+		for (User voter:v.getVoters()) {
+			User user = userRepo.findOne(Example.of(voter)).get();
+			sb.append(user.getId()).append(" | ")
+			.append(user.getCreationDateTime()).append(" | ")
+			.append(user.getName()).append(" | ")
+			.append(user.getEmail()).append("\n");
+		}
+		sb.append("=============================================").append("\n");
+		return sb.toString();
 	}
 }

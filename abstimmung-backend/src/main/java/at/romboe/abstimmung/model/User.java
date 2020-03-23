@@ -1,8 +1,13 @@
 package at.romboe.abstimmung.model;
 
+import java.util.Date;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Data;
 
@@ -12,7 +17,9 @@ public class User {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	private UUID id;
+	@CreationTimestamp
+	private Date creationDateTime;
 	private String name;
 	private String email;
 

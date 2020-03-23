@@ -3,7 +3,6 @@ package at.romboe.abstimmung;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,6 @@ public class Controller {
 		return ResponseEntity.ok(votings);
 	}
 
-
 	@GetMapping(value="/{id}")
 	public ResponseEntity<Response> getVoting(@PathVariable String id) throws IOException {
 		Response response = new Response();
@@ -67,16 +65,15 @@ public class Controller {
 
 		int i = 0;
 		int enabledRow = -1;
-		for (Map.Entry<String, User> e:voting.getVoters().entrySet()) {
+		for (User user:voting.getVoters()) {
 			i++; // we start with 1 as the first row (index=0) are the option names
 
-			String uuid = e.getKey();
+			String uuid = user.getId().toString();
 			if (uuid.equals(voterId)) {
 				enabledRow = i;
 			}
 
 			row = new ArrayList<>();
-			User user = e.getValue();
 			row.add(user.getName());
 			for (Option o:voting.getOptions()) {
 				row.add(Boolean.toString( o.getVoters().contains(user) ));
@@ -91,13 +88,11 @@ public class Controller {
 		return ResponseEntity.ok(response);
 	}
 
-
 	@PutMapping(value="/votes")
 	public ResponseEntity<String> vote(@RequestBody VoteInput input) throws IOException {
 		service.vote(input);
 		return ResponseEntity.ok().build();
 	}
-
 
 	public ResponseEntity<String> invite(@RequestBody Invitation invitation) throws IOException {
 

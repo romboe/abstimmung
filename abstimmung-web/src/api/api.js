@@ -38,7 +38,7 @@ export async function changeName(votingId, voterId, name) {
             url: '/users',
             data: {
                 votingId, // entspricht votingId: votingId
-                voterId,
+                userId: voterId,
                 name
             }
         });

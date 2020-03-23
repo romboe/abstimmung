@@ -1,10 +1,7 @@
 package at.romboe.abstimmung;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,15 +27,15 @@ public class AbstimmungApplication {
 		v.setOptions(options);
 
 		// send invitations
-		Map<String,User> map = new LinkedHashMap<>();
-		map.put(UUID.randomUUID().toString(), new User("hallo@servus.at"));
-		map.put(UUID.randomUUID().toString(), new User("Kasperl", "petzi@baer.at"));
-		map.put(UUID.randomUUID().toString(), new User("Jane", "jane@tarzan.at"));
-		v.setVoters(map);
+		List<User> voters = new ArrayList<>();
+		voters.add(new User("hallo@servus.at"));
+		voters.add(new User("Kasperl", "petzi@baer.at"));
+		voters.add(new User("Jane", "jane@tarzan.at"));
+		v.setVoters(voters);
 		v = service.saveVoting(v);
 
 		for (Voting v1:service.findAllVotings()) {
-			System.out.println(v1.dump());
+			System.out.println(service.dump(v1.getId()));
 		}
 
 		// user calls his link
@@ -53,22 +50,18 @@ public class AbstimmungApplication {
 
 		v = service.saveVoting(v);
 		printVotes(v);
-
-		// Client
-		// * Users Stimme editierbar darstellen, dazu in den Option-Votings nach seiner Id suchen
 	}
-
 
 	private static void printVotes(Voting v) {
 		// Options zeilenweise für jeden User aufbereiten
-		for (Map.Entry<String, User> u:v.getVoters().entrySet()) {
+		for (User u:v.getVoters()) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(u.getValue().getName());
+			sb.append(u.getName());
 			sb.append(" ");
 			for (Option o:v.getOptions()) {
 				sb.append(o.getName());
 				sb.append("=");
-				sb.append(o.getVoters().contains(u.getValue()));
+				sb.append(o.getVoters().contains(u));
 				sb.append(", ");
 			}
 			sb.append("\n");

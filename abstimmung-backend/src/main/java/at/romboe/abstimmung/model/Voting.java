@@ -1,12 +1,10 @@
 package at.romboe.abstimmung.model;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -25,10 +23,13 @@ public class Voting {
 	private String description;
 	@OneToOne
 	private User creator;
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	// CascadeType.ALL alle Operationen, die auf Voting angewandt werden, werden auch auf options angewendet
+	@OneToMany(cascade=CascadeType.ALL)
 	private List<Option> options;
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	private Map<String, User> voters;
+	// CascadeType.ALL wenn Voting gespeichert wird, dann werden auch die User in der Voters Liste gespeichert,
+	// ansonsten müsste man MANUELL zuerst den User speichern u danach das Voting
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<User> voters;
 
 
 	public Voting() {
@@ -37,24 +38,5 @@ public class Voting {
 
 	public Voting(String name) {
 		this.name = name;
-	}
-
-	public String dump() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("=============================================").append("\n");
-		sb.append(id + " " + name).append("\n");
-		sb.append("- Description -------------------------------").append("\n");
-		sb.append(description).append("\n");
-		sb.append("- Options -----------------------------------").append("\n");
-		for (Option o:options) {
-			sb.append(o.getName()).append("\n");
-		}
-		sb.append("- Voters ------------------------------------").append("\n");
-		for (Map.Entry<String, User> entry:voters.entrySet()) {
-			User user = entry.getValue();
-			sb.append(entry.getKey()).append(" | ").append(user.getId()).append(" | ").append(user.getEmail()).append("\n");
-		}
-		sb.append("=============================================").append("\n");
-		return sb.toString();
 	}
 }

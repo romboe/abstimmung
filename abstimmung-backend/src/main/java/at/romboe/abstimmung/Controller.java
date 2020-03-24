@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
+import at.romboe.abstimmung.model.client.AddUserInput;
 import at.romboe.abstimmung.model.client.ChangeUserNameInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
@@ -44,9 +47,14 @@ public class Controller {
 		String votingId = null;
 		String voterId = null;
 		try {
-			String[] p = id.split(":");
-			votingId = p[0];
-			voterId = p[1];
+			if (id.indexOf(':') > 0) {
+				String[] p = id.split(":");
+				votingId = p[0];
+				voterId = p[1];
+			}
+			else {
+				votingId = id;
+			}
 		}
 		catch(Exception e) {
 			throw new IllegalArgumentException();
@@ -99,6 +107,12 @@ public class Controller {
 		service.invite(invitation);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@PutMapping(value="/users")
+	public ResponseEntity<User> addUser(@RequestBody AddUserInput input) throws IOException, EntityExistsException {
+		User user = service.addUser(input);
+		return ResponseEntity.ok(user);
 	}
 
 	@PostMapping("/users")

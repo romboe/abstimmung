@@ -1,4 +1,5 @@
 import React, {useEffect, Fragment} from 'react';
+import AddUser from './AddUser';
 import Table from './Table';
 //import {voting} from '../testdata/data.js';
 import {useParams} from "react-router-dom";
@@ -36,6 +37,7 @@ function Voting() {
           <Fragment>
             <h1>{voting.name}</h1>
             <Table data={voting}></Table>
+            <AddUser></AddUser>
           </Fragment>
         :
           ''

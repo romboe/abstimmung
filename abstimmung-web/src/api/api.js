@@ -47,3 +47,22 @@ export async function changeName(votingId, voterId, name) {
         console.log(error);
     }
 }
+
+export async function addUser(votingId, name, email) {
+    let response;
+    try {
+        response = await axios({
+            method: 'put',
+            url: '/users',
+            data: {
+                votingId, // entspricht votingId: votingId
+                name,
+                email
+            }
+        });
+    }
+    catch(error) {
+        console.log(error);
+    }
+    return response;
+}

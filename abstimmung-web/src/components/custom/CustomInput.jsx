@@ -7,7 +7,9 @@ function CustomInput(props) {
         setState(val);
     }
     const handleBlur = (e) => {
-        props.changeHandler(state);
+        if (props.changeHandler) {
+            props.changeHandler(state);
+        }
     }
     return(
         <input onChange={handleChange} onBlur={handleBlur} type="text" value={state}></input>

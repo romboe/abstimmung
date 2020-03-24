@@ -1,5 +1,7 @@
 package at.romboe.abstimmung;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		if (ex instanceof IllegalArgumentException) {
 			bodyOfResponse = "Illegal arguments.";
 			status = HttpStatus.BAD_REQUEST;
+		}
+		else if (ex instanceof EntityExistsException) {
+			bodyOfResponse = "Already exists.";
 		}
 		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), status, request);
 	}

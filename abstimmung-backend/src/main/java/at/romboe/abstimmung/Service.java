@@ -3,6 +3,8 @@ package at.romboe.abstimmung;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
+import at.romboe.abstimmung.model.client.AddUserInput;
 import at.romboe.abstimmung.model.client.ChangeUserNameInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.VoteInput;
@@ -86,6 +89,19 @@ public class Service {
 			// if sending was successful put user into voter list
 			voting.getVoters().add(user);
 		}
+	}
+
+	public User addUser(AddUserInput input) throws EntityExistsException {
+		Voting voting = findVoting(input.getVotingId());
+		boolean emailExists = voting.getVoters().stream().anyMatch(v -> v.getEmail().equals(input.getEmail()));
+		if (emailExists) {
+			throw new EntityExistsException();
+		}
+		User user = new User(input.getName(), input.getEmail());
+		userRepo.save(user);
+		voting.getVoters().add(user);
+		votingRepo.save(voting);
+		return user;
 	}
 
 	public void changeUserName(ChangeUserNameInput input) {

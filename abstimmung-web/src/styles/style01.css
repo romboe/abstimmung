@@ -9,3 +9,8 @@
 .table-cell {
     display: table-cell;
 }
+
+.option {
+    border: 1px solid black;
+    border-radius: 25px;
+}

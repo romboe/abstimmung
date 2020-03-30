@@ -5,18 +5,22 @@ function OptionSelection(props) {
     const [state, setState] = useState({values:props.values})
 
     useEffect(() => {
-        setState({values:props.values});
+        if (props.values) {
+            setState({values:props.values});
+        }
+        
     }, [props]);
 
     const handleClick = (index) => {
         const values = state.values;
         values.splice(index, 1);
         setState({values});
+        props.changeHandler(values);
     }
 
     return(
-        <div class='list-inline'>
-            {state.values.map((x, i) => <Option clickHandler={handleClick} index={i} value={x}></Option>)}
+        <div className='list-inline'>
+            {state.values.map((x, i) => <Option clickHandler={handleClick} key={i} index={i} value={x}></Option>)}
         </div>
     )
 }

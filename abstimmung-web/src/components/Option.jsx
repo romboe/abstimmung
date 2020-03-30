@@ -15,9 +15,9 @@ function Option(props) {
         props.clickHandler(props.index);
     }
     return(
-        <div class='list-inline-item border border-primary rounded'>
+        <div className='list-inline-item border border-primary rounded'>
             <h5>{state}</h5>
-            <button type="button" class="btn btn-outline-primary" onClick={handleClick}>-</button>
+            <button type="button" className="btn btn-outline-primary" onClick={handleClick}>-</button>
         </div>
     )
 }

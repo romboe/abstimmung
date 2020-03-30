@@ -21,6 +21,7 @@ import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
 import at.romboe.abstimmung.model.client.AddUserInput;
 import at.romboe.abstimmung.model.client.ChangeUserNameInput;
+import at.romboe.abstimmung.model.client.CreateVotingInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
 import at.romboe.abstimmung.model.client.VoteInput;
@@ -120,6 +121,12 @@ public class Controller {
 
 		service.changeUserName(input);
 
+		return ResponseEntity.ok().build();
+	}
+
+	@PutMapping("/")
+	public ResponseEntity<String> createVoting(@RequestBody CreateVotingInput input) throws IOException {
+		service.createVoting(input);
 		return ResponseEntity.ok().build();
 	}
 }

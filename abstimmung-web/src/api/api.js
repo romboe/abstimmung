@@ -66,3 +66,24 @@ export async function addUser(votingId, name, email) {
     }
     return response;
 }
+
+export async function createVoting(input) {
+    let response;
+    try {
+        response = await axios({
+            method: 'put',
+            url: '/',
+            data: {
+                votingName: input.votingName, 
+                description: input.description,
+                creatorName: input.creatorName,
+                creatorEmail: input.creatorEmail,
+                options: input.options
+            }
+        });
+    }
+    catch(error) {
+        console.log(error);
+    }
+    return response;
+}

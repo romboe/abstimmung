@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import CustomInput from './custom/CustomInput'
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import OptionSelection from './OptionSelection';
-// import {vote, changeName} from  "../api/api";
+import {createVoting} from  "../api/api";
 // import {useSelector} from 'react-redux';
 
 function CreateVoting(props) {
 
-    const [state, setState] = useState({optionValues:[]});
+    const [state, setState] = useState({votingName: '', description: '', creatorName: '', creatorEmail: '', optionRange:[], optionValues:[]});
     /*
     const voting = useSelector(state => state.voting);
 
@@ -32,25 +32,42 @@ function CreateVoting(props) {
         return ret;
     }
 
-    const handleChange = (val) => {
+    const handleDateChange = (val) => {
         const [begin, end] = val;
         if (begin !== undefined && end !== undefined) {
-            const optionValues = getDates(begin, end);
-            setState({optionValues});
+            const dates = getDates(begin, end);
+            setState(s => { return {...s, optionRange:dates}});
         }
-        
-        console.log(val);
     }
 
-    const handleNameChange = () => {
+    const handleOptionChange = (values) => {
+        setState(s => { return {...s, optionValues:values}});
+    }
 
+    const handleNameChange = (val) => {
+        setState(Object.assign(state, {creatorName:val}));
+    }
+
+    const handleClick = () => {
+        console.log(JSON.stringify(state, null, 2));
+        createVoting({
+            votingName: state.votingName,
+            description: state.description,
+            creatorName: state.creatorName,
+            creatorEmail: state.creatorEmail,
+            options: state.optionValues
+        })
     }
 
     return(
         <div>
-            <CustomInput changeHandler={handleNameChange}></CustomInput>
-            <DateRangePicker onChange={handleChange} isOpen={true} format="dd.MMM yyyy" value={new Date()}></DateRangePicker>
-            <OptionSelection values={state.optionValues}></OptionSelection>
+            <div>Name <CustomInput changeHandler={val => setState(Object.assign(state, {votingName:val}))} value={state.votingName}></CustomInput></div>
+            <div>Descr <CustomInput changeHandler={val => setState(Object.assign(state, {description:val}))} value={state.description}></CustomInput></div>
+            <div>Creator <CustomInput changeHandler={handleNameChange} value={state.creatorName}></CustomInput></div>
+            <div>E-Mail <CustomInput changeHandler={val => setState(Object.assign(state, {creatorEmail:val}))} value={state.creatorEmail}></CustomInput></div>
+            <div><DateRangePicker onChange={handleDateChange} isOpen={true} format="dd.MMM yyyy" value={new Date()}></DateRangePicker></div>
+            <div><OptionSelection changeHandler={handleOptionChange} values={state.optionRange}></OptionSelection></div>
+            <button onClick={handleClick}>Abstimmung erstellen</button>
         </div>
     )
 }

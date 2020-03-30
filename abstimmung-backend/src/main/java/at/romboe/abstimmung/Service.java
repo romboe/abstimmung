@@ -1,11 +1,14 @@
 package at.romboe.abstimmung;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
 import at.romboe.abstimmung.model.client.AddUserInput;
 import at.romboe.abstimmung.model.client.ChangeUserNameInput;
+import at.romboe.abstimmung.model.client.CreateVotingInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.VoteInput;
 import at.romboe.abstimmung.repos.UserRepository;
@@ -110,6 +114,21 @@ public class Service {
 		User user = findUserInVoting(voting, input.getUserId());
 		user.setName(input.getName());
 		userRepo.save(user);
+	}
+
+	public void createVoting(CreateVotingInput input) {
+		Voting v = new Voting();
+		User user = new User(input.getCreatorName(), input.getCreatorEmail());
+		userRepo.save(user);
+		v.setCreator(user);
+		v.setName(input.getVotingName());
+		v.setDescription(input.getDescription());
+		List<Option> options = new ArrayList<>();
+		for (String o:input.getOptions()) {
+			options.add(new Option(o));
+		}
+		v.setOptions(options);
+		saveVoting(v);
 	}
 
 	private User findUserInVoting(Voting voting, String userId) {

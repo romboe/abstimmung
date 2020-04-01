@@ -12,7 +12,7 @@ function CustomInput(props) {
         }
     }
     return(
-        <input onChange={handleChange} onBlur={handleBlur} type="text" value={state}></input>
+        <input readOnly={props.readonly} onChange={handleChange} onBlur={handleBlur} type="text" value={state}></input>
     );
 }
 

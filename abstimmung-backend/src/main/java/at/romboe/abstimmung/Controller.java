@@ -1,7 +1,6 @@
 package at.romboe.abstimmung;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityExistsException;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
 import at.romboe.abstimmung.model.client.AddUserInput;
@@ -42,59 +40,7 @@ public class Controller {
 
 	@GetMapping(value="/{id}")
 	public ResponseEntity<Response> getVoting(@PathVariable String id) throws IOException {
-		Response response = new Response();
-		response.setName("" + id);
-
-		String votingId = null;
-		String voterId = null;
-		try {
-			if (id.indexOf(':') > 0) {
-				String[] p = id.split(":");
-				votingId = p[0];
-				voterId = p[1];
-			}
-			else {
-				votingId = id;
-			}
-		}
-		catch(Exception e) {
-			throw new IllegalArgumentException();
-		}
-
-		Voting voting = service.findVoting(votingId);
-
-		List<List<String>> rows = new ArrayList<>();
-
-		List<String> row = new ArrayList<>();
-		row.add("");
-		for (Option o:voting.getOptions()) {
-			row.add(o.getName());
-		}
-		rows.add(row);
-
-		int i = 0;
-		int enabledRow = -1;
-		for (User user:voting.getVoters()) {
-			i++; // we start with 1 as the first row (index=0) are the option names
-
-			String uuid = user.getId().toString();
-			if (uuid.equals(voterId)) {
-				enabledRow = i;
-			}
-
-			row = new ArrayList<>();
-			row.add(user.getName());
-			for (Option o:voting.getOptions()) {
-				row.add(Boolean.toString( o.getVoters().contains(user) ));
-			}
-			rows.add(row);
-		}
-
-		response.setName(voting.getName());
-		response.setDescription(voting.getDescription());
-		response.setRows(rows);
-		response.setEnabledRow(enabledRow);
-
+		Response response = service.getVoting(id);
 		return ResponseEntity.ok(response);
 	}
 

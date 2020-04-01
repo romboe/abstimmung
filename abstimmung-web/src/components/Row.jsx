@@ -19,7 +19,7 @@ function Row(props) {
 
     return(
         props.data.map((d, index) => {
-            return index === 0 ? <th key={index} scope="row"><CustomInput changeHandler={handleNameChange} value={d}></CustomInput></th> :
+            return index === 0 ? <th key={index} scope="row"><CustomInput changeHandler={handleNameChange} readonly={!props.enabled} value={d}></CustomInput></th> :
             <td key={index}><CustomCheckbox clickHandler={handleClick} index={index-1} enabled={props.enabled} value={d}/></td>
         })
     )

@@ -12,7 +12,7 @@ function CustomCheckbox(props) {
         props.clickHandler(props.index, val);
     }
 
-    return <input disabled={!props.enabled} type="checkbox" checked={checked} onClick={tick}></input>
+    return <input disabled={!props.enabled} type="checkbox" checked={checked} onChange={tick}></input>
 }
 
 function isTrue(val) {

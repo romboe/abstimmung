@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {dm} from '../utils/dateUtils'
 
 function Option(props) {
 
-    const [state, setState] = useState('');
+    const [state, setState] = useState();
 
     useEffect(() => {
+        setState(props.value)
+        /*
         if (typeof props.value.getMonth === 'function') {
             setState(dm(props.value));
         }
+        */
     }, [props]);
 
     const handleClick = () => {

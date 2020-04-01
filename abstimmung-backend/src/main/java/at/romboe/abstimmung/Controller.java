@@ -91,6 +91,7 @@ public class Controller {
 		}
 
 		response.setName(voting.getName());
+		response.setDescription(voting.getDescription());
 		response.setRows(rows);
 		response.setEnabledRow(enabledRow);
 
@@ -126,7 +127,7 @@ public class Controller {
 
 	@PutMapping("/")
 	public ResponseEntity<String> createVoting(@RequestBody CreateVotingInput input) throws IOException {
-		service.createVoting(input);
-		return ResponseEntity.ok().build();
+		Voting voting = service.createVoting(input);
+		return ResponseEntity.ok(voting.getId().toString() + ":" + voting.getCreator().getId().toString());
 	}
 }

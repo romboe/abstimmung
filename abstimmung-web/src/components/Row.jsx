@@ -19,8 +19,8 @@ function Row(props) {
 
     return(
         props.data.map((d, index) => {
-            return index === 0 ? <th scope="row"><CustomInput changeHandler={handleNameChange} value={d}></CustomInput></th> :
-            <td><CustomCheckbox clickHandler={handleClick} index={index-1} enabled={props.enabled} value={d}/></td>
+            return index === 0 ? <th key={index} scope="row"><CustomInput changeHandler={handleNameChange} value={d}></CustomInput></th> :
+            <td key={index}><CustomCheckbox clickHandler={handleClick} index={index-1} enabled={props.enabled} value={d}/></td>
         })
     )
 }

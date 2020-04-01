@@ -8,6 +8,7 @@ import lombok.Data;
 public class Response {
 
 	private String name;
+	private String description;
 	private int enabledRow;
 	private List<List<String>> rows;
 }

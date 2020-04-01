@@ -7,8 +7,6 @@ import java.util.UUID;
 import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,7 +114,9 @@ public class Service {
 		userRepo.save(user);
 	}
 
-	public void createVoting(CreateVotingInput input) {
+	// https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
+	@Transactional
+	public Voting createVoting(CreateVotingInput input) {
 		Voting v = new Voting();
 		User user = new User(input.getCreatorName(), input.getCreatorEmail());
 		userRepo.save(user);
@@ -129,6 +129,7 @@ public class Service {
 		}
 		v.setOptions(options);
 		saveVoting(v);
+		return v;
 	}
 
 	private User findUserInVoting(Voting voting, String userId) {

@@ -36,6 +36,7 @@ function Voting() {
         voting != null ?
           <Fragment>
             <h1>{voting.name}</h1>
+            <p>{voting.description}</p>
             <Table data={voting}></Table>
             <AddUser></AddUser>
           </Fragment>

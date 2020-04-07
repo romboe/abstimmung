@@ -19,6 +19,9 @@ public class AbstimmungApplication {
 		Service service = context.getBean(Service.class);
 		Voting v = new Voting("badheizkoerper");
 		v.setDescription("eine erste Umfrage");
+		User creator = service.saveUser(new User("Pharao","tut@amun"));
+		v.setCreator(creator);
+		service.saveVoting(v);
 
 		// add options
 		List<Option> options = new ArrayList<>();
@@ -32,6 +35,7 @@ public class AbstimmungApplication {
 		voters.add(new User("Kasperl", "petzi@baer.at"));
 		voters.add(new User("Jane", "jane@tarzan.at"));
 		v.setVoters(voters);
+		v.getVoters().add(v.getCreator());
 		v = service.saveVoting(v);
 
 		for (Voting v1:service.findAllVotings()) {

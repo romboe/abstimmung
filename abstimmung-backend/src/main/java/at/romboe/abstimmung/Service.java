@@ -46,6 +46,10 @@ public class Service {
 		return votingRepo.save(v);
 	}
 
+	public User saveUser(User u) {
+		return userRepo.save(u);
+	}
+
 	public User findUserByEmail(String email) {
 		return userRepo.findByEmail(email);
 	}

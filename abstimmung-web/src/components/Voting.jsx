@@ -14,6 +14,25 @@ function Voting() {
     const voting = useSelector(state => state.voting);
     const dispatch = useDispatch();
 
+    const setupCounter = (rows) => {
+      let counter = [];
+        for (let i=1; i<rows.length; i++) {
+            for (let columnIndex=1; columnIndex<rows[i].length; columnIndex++) {
+                counter[columnIndex-1] = 0;
+            }
+        }
+        for (let i=1; i<rows.length; i++) {
+            for (let columnIndex=1; columnIndex<rows[i].length; columnIndex++) {
+                // console.log(rows[i] + ':' + columnIndex + ' = ' + rows[i][columnIndex]);
+                if (rows[i][columnIndex] === 'true') {
+                  counter[columnIndex-1]++;
+                }
+            }
+        }
+        console.log(counter);
+        return counter;
+    }
+
     useEffect(() => {
       // https://www.robinwieruch.de/react-hooks-fetch-data
       console.log("MOuntie " +id);
@@ -22,7 +41,8 @@ function Voting() {
         const response = await getVoting(votingId, voterId);
         if (response) {
           let obj = response.data;
-          Object.assign(obj, {votingId, voterId});
+          const counter = setupCounter(obj.rows);
+          Object.assign(obj, {votingId, voterId, counter});
           console.log(obj);
 
           dispatch(initVoting(obj));

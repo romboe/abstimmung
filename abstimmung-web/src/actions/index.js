@@ -4,3 +4,10 @@ export const initVoting = (voting) => {
         payload: voting
     }
 }
+
+export const updateCounter = (counter) => {
+    return {
+        type: 'UPDATE_COUNTER',
+        payload: {counter}
+    }
+}

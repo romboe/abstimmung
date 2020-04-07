@@ -10,6 +10,8 @@ const votingReducer = (state, action) => {
     switch (action.type) {
         case 'SET':
             return updateObject(state, action.payload)
+        case 'UPDATE_COUNTER':
+            return updateObject(state, action.payload)
         default:
             return null
     }

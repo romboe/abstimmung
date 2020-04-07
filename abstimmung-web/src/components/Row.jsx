@@ -2,14 +2,24 @@ import React from 'react';
 import CustomCheckbox from './custom/CustomCheckbox'
 import CustomInput from './custom/CustomInput'
 import {vote, changeName} from  "../api/api";
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {updateCounter} from "../actions";
 
 function Row(props) {
 
     const voting = useSelector(state => state.voting);
+    const dispatch = useDispatch();
 
     const handleClick = (checkboxIndex, val) => {
         console.log(checkboxIndex + " is " + val);
+        let counter = voting.counter;
+        if (val === true) {
+            counter[checkboxIndex]++;
+        }
+        else {
+            counter[checkboxIndex]--;
+        }
+        dispatch(updateCounter(counter));
         vote(voting.votingId, voting.voterId, checkboxIndex, val);
     }
 

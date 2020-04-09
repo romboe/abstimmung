@@ -38,13 +38,14 @@ public class Controller {
 		return ResponseEntity.ok(votings);
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="/api/{id}")
 	public ResponseEntity<Response> getVoting(@PathVariable String id) throws IOException {
 		Response response = service.getVoting(id);
 		return ResponseEntity.ok(response);
 	}
 
-	@PutMapping(value="/votes")
+	// @ApiOperation(value = "Votes.", notes = "Notes for Votes.")
+	@PutMapping(value="/api/votes")
 	public ResponseEntity<String> vote(@RequestBody VoteInput input) throws IOException {
 		service.vote(input);
 		return ResponseEntity.ok().build();
@@ -57,13 +58,13 @@ public class Controller {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping(value="/users")
+	@PutMapping(value="/api/users")
 	public ResponseEntity<User> addUser(@RequestBody AddUserInput input) throws IOException, EntityExistsException {
 		User user = service.addUser(input);
 		return ResponseEntity.ok(user);
 	}
 
-	@PostMapping("/users")
+	@PostMapping("/api/users")
 	public ResponseEntity<String> changeUserName(@RequestBody ChangeUserNameInput input) throws IOException {
 
 		service.changeUserName(input);
@@ -71,7 +72,7 @@ public class Controller {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping("/")
+	@PutMapping("/api")
 	public ResponseEntity<String> createVoting(@RequestBody CreateVotingInput input) throws IOException {
 		Voting voting = service.createVoting(input);
 		return ResponseEntity.ok(voting.getId().toString() + ":" + voting.getCreator().getId().toString());

@@ -58,7 +58,7 @@ function Voting() {
             <h1>{voting.name}</h1>
             <p>{voting.description}</p>
             <Table data={voting}></Table>
-            {voting.admin || voting.enabledRow < 0 ? <AddUser></AddUser> : ''}
+            {voting.admin || (voting.enabledRow < 0 && voting.voterId) ? <AddUser></AddUser> : ''}
           </Fragment>
         :
           ''

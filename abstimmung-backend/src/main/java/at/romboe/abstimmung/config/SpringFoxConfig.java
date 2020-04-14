@@ -1,4 +1,4 @@
-package at.romboe.abstimmung;
+package at.romboe.abstimmung.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

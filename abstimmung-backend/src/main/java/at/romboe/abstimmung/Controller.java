@@ -24,7 +24,7 @@ import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
 import at.romboe.abstimmung.model.client.VoteInput;
 
-@CrossOrigin(origins="http://localhost:3002")
+@CrossOrigin(origins= {"http://localhost:3000","http://localhost:3002"})
 @RestController
 public class Controller {
 
@@ -51,10 +51,9 @@ public class Controller {
 		return ResponseEntity.ok().build();
 	}
 
+	@PostMapping(value="/api/invite")
 	public ResponseEntity<String> invite(@RequestBody Invitation invitation) throws IOException {
-
 		service.invite(invitation);
-
 		return ResponseEntity.ok().build();
 	}
 

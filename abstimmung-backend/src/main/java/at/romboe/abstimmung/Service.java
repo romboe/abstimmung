@@ -11,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import at.romboe.abstimmung.config.ConfigProperties;
 import at.romboe.abstimmung.model.Option;
 import at.romboe.abstimmung.model.User;
 import at.romboe.abstimmung.model.Voting;
@@ -32,6 +33,8 @@ public class Service {
 	private UserRepository userRepo;
 	@Autowired
 	private MailService mailService;
+	@Autowired
+	private ConfigProperties props;
 
 
 	public Voting findVoting(String uuid) {
@@ -147,13 +150,19 @@ public class Service {
 			User user = findUserByEmail(email);
 			if (null == user) {
 				user = new User(email);
+				saveUser(user);
+				voting.getVoters().add(user);
+				saveVoting(voting);
 			}
 
-			mailService.sendSimpleMessage(email, "Hallo", "Guten Tag");
-
-			// if sending was successful put user into voter list
-			voting.getVoters().add(user);
+			String text = "Hallöle!\nDu wurdest zu einer Abstimmung eingeladen: ";
+			text += buildUrl(invitation.getVotingId(), user.getId().toString());
+			mailService.sendSimpleMessage(email, "Abstimmung Einladung", text);
 		}
+	}
+	
+	private String buildUrl(String votingId, String voterId) {
+		return props.getClient().getUrl() + ":" + props.getClient().getPort() + "/votings/" + votingId + voterId; 
 	}
 
 	public User addUser(AddUserInput input) throws EntityExistsException {

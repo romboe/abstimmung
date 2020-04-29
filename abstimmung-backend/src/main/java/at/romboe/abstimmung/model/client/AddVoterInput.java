@@ -3,9 +3,9 @@ package at.romboe.abstimmung.model.client;
 import lombok.Data;
 
 @Data
-public class ChangeUserNameInput {
+public class AddVoterInput {
 
 	private String votingId;
-	private String userId;
 	private String name;
+	private String email;
 }

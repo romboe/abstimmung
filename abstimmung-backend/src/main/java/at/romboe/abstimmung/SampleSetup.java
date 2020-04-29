@@ -9,7 +9,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import at.romboe.abstimmung.model.Option;
-import at.romboe.abstimmung.model.User;
+import at.romboe.abstimmung.model.Voter;
 import at.romboe.abstimmung.model.Voting;
 
 @Component
@@ -22,36 +22,36 @@ public class SampleSetup {
 	public void run() {
 		Voting v = new Voting("badheizkoerper");
 		v.setDescription("eine erste Umfrage");
-		User creator = service.saveUser(new User("Pharao", "tut@amun"));v.setCreator(creator);service.saveVoting(v);
+		Voter creator = service.saveVoter(new Voter("Pharao", "tut@amun"));v.setCreator(creator);service.saveVoting(v);
 
 		// add options
 		List<Option> options = new ArrayList<>();options.add(new Option("Eins"));options.add(new Option("Zwei"));v.setOptions(options);
 		
 		// send invitations
-		List<User> voters = new ArrayList<>();voters.add(new User("hallo@servus.at"));voters.add(new User("Kasperl","petzi@baer.at"));voters.add(new User("Jane","jane@tarzan.at"));v.setVoters(voters);v.getVoters().add(v.getCreator());v=service.saveVoting(v);
+		List<Voter> voters = new ArrayList<>();voters.add(new Voter("hallo@servus.at"));voters.add(new Voter("Kasperl","petzi@baer.at"));voters.add(new Voter("Jane","jane@tarzan.at"));v.setVoters(voters);v.getVoters().add(v.getCreator());v=service.saveVoting(v);
 
 		for(Voting v1:service.findAllVotings())
 		{
 			System.out.println(service.dump(v1.getId()));
 		}
 
-		// user calls his link
+		// voter calls his link
 		// 1. Voting holen
 		printVotes(v);
 
-		// User gibt Stimme ab
+		// Voter gibt Stimme ab
 		long optionId = 1;
-		User user = service.findUserByEmail("hallo@servus.at");
+		Voter voter = service.findVoterByEmail("hallo@servus.at");
 		Option op = v.getOptions().stream().filter(o -> o.getId().equals(optionId)).findFirst().get();
-		op.getVoters().add(user);
+		op.getVoters().add(voter);
 	
 		v = service.saveVoting(v);
 		printVotes(v);
 	}
 
 	private static void printVotes(Voting v) {
-		// Options zeilenweise für jeden User aufbereiten
-		for (User u:v.getVoters()) {
+		// Options zeilenweise für jeden Voter aufbereiten
+		for (Voter u:v.getVoters()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(u.getName());
 			sb.append(" ");

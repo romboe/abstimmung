@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import at.romboe.abstimmung.model.User;
+import at.romboe.abstimmung.model.Voter;
 import at.romboe.abstimmung.model.Voting;
-import at.romboe.abstimmung.model.client.AddUserInput;
-import at.romboe.abstimmung.model.client.ChangeUserNameInput;
+import at.romboe.abstimmung.model.client.AddVoterInput;
+import at.romboe.abstimmung.model.client.ChangeVoterNameInput;
 import at.romboe.abstimmung.model.client.CreateVotingInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
@@ -58,15 +58,15 @@ public class Controller {
 	}
 
 	@PutMapping(value="/api/users")
-	public ResponseEntity<User> addUser(@RequestBody AddUserInput input) throws IOException, EntityExistsException {
-		User user = service.addUser(input);
-		return ResponseEntity.ok(user);
+	public ResponseEntity<Voter> addVoter(@RequestBody AddVoterInput input) throws IOException, EntityExistsException {
+		Voter voter = service.addVoter(input);
+		return ResponseEntity.ok(voter);
 	}
 
 	@PostMapping("/api/users")
-	public ResponseEntity<String> changeUserName(@RequestBody ChangeUserNameInput input) throws IOException {
+	public ResponseEntity<String> changeVoterName(@RequestBody ChangeVoterNameInput input) throws IOException {
 
-		service.changeUserName(input);
+		service.changeVoterName(input);
 
 		return ResponseEntity.ok().build();
 	}

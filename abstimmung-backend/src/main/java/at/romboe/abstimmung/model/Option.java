@@ -19,7 +19,7 @@ public class Option {
 	private Long id;
 	private String name;
 	@ManyToMany
-	private Set<User> voters = new HashSet<>();
+	private Set<Voter> voters = new HashSet<>();
 
 	public Option() {
 		super();

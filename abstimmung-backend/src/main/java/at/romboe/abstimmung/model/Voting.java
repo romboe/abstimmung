@@ -22,14 +22,14 @@ public class Voting {
 	private String name;
 	private String description;
 	@OneToOne
-	private User creator;
+	private Voter creator;
 	// CascadeType.ALL alle Operationen, die auf Voting angewandt werden, werden auch auf options angewendet
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Option> options;
 	// CascadeType.ALL wenn Voting gespeichert wird, dann werden auch die User in der Voters Liste gespeichert,
 	// ansonsten müsste man MANUELL zuerst den User speichern u danach das Voting
 	@OneToMany(cascade=CascadeType.ALL)
-	private List<User> voters;
+	private List<Voter> voters;
 
 
 	public Voting() {

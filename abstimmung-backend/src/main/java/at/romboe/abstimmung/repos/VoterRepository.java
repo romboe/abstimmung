@@ -3,9 +3,9 @@ package at.romboe.abstimmung.repos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import at.romboe.abstimmung.model.User;
+import at.romboe.abstimmung.model.Voter;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
-	User findByEmail(String email);
+public interface VoterRepository extends JpaRepository<Voter, String> {
+	Voter findByEmail(String email);
 }

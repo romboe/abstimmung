@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class User {
+public class Voter {
 
 	@Id
 	@GeneratedValue
@@ -23,16 +23,16 @@ public class User {
 	private String name;
 	private String email;
 
-	public User() {
+	public Voter() {
 		super();
 	}
 
-	public User(String name, String email) {
+	public Voter(String name, String email) {
 		this.name = name;
 		this.email = email;
 	}
 
-	public User(String email) {
+	public Voter(String email) {
 		this("Name", email);
 	}
 }

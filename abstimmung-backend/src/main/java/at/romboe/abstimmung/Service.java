@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import at.romboe.abstimmung.config.ConfigProperties;
 import at.romboe.abstimmung.model.Option;
-import at.romboe.abstimmung.model.User;
+import at.romboe.abstimmung.model.Voter;
 import at.romboe.abstimmung.model.Voting;
-import at.romboe.abstimmung.model.client.AddUserInput;
-import at.romboe.abstimmung.model.client.ChangeUserNameInput;
+import at.romboe.abstimmung.model.client.AddVoterInput;
+import at.romboe.abstimmung.model.client.ChangeVoterNameInput;
 import at.romboe.abstimmung.model.client.CreateVotingInput;
 import at.romboe.abstimmung.model.client.Invitation;
 import at.romboe.abstimmung.model.client.Response;
 import at.romboe.abstimmung.model.client.VoteInput;
-import at.romboe.abstimmung.repos.UserRepository;
+import at.romboe.abstimmung.repos.VoterRepository;
 import at.romboe.abstimmung.repos.VotingRepository;
 
 @Component
@@ -30,7 +30,7 @@ public class Service {
 	@Autowired
 	private VotingRepository votingRepo;
 	@Autowired
-	private UserRepository userRepo;
+	private VoterRepository voterRepo;
 	@Autowired
 	private MailService mailService;
 	@Autowired
@@ -49,12 +49,12 @@ public class Service {
 		return votingRepo.save(v);
 	}
 
-	public User saveUser(User u) {
-		return userRepo.save(u);
+	public Voter saveVoter(Voter u) {
+		return voterRepo.save(u);
 	}
 
-	public User findUserByEmail(String email) {
-		return userRepo.findByEmail(email);
+	public Voter findVoterByEmail(String email) {
+		return voterRepo.findByEmail(email);
 	}
 
 	public Response getVoting(String id) {
@@ -90,18 +90,18 @@ public class Service {
 
 		int i = 0;
 		int enabledRow = -1;
-		for (User user:voting.getVoters()) {
+		for (Voter voter:voting.getVoters()) {
 			i++; // we start with 1 as the first row (index=0) are the option names
 
-			String uuid = user.getId().toString();
+			String uuid = voter.getId().toString();
 			if (uuid.equals(voterId)) {
 				enabledRow = i;
 			}
 
 			row = new ArrayList<>();
-			row.add(user.getName());
+			row.add(voter.getName());
 			for (Option o:voting.getOptions()) {
-				row.add(Boolean.toString( o.getVoters().contains(user) ));
+				row.add(Boolean.toString( o.getVoters().contains(voter) ));
 			}
 			rows.add(row);
 		}
@@ -123,7 +123,7 @@ public class Service {
 
 		Voting voting = findVoting(votingId);
 
-		User user = findUserInVoting(voting, voterId);
+		Voter voter = findVoterInVoting(voting, voterId);
 
 		Option option = null;
 		for (int i=0; i<voting.getOptions().size(); i++) {
@@ -134,10 +134,10 @@ public class Service {
 		}
 
 		if (value) {
-			option.getVoters().add(user);
+			option.getVoters().add(voter);
 		}
 		else {
-			option.getVoters().remove(user);
+			option.getVoters().remove(voter);
 		}
 
 		saveVoting(voting);
@@ -147,16 +147,16 @@ public class Service {
 		Voting voting = findVoting(invitation.getVotingId());
 
 		for (String email:invitation.getEmails()) {
-			User user = findUserByEmail(email);
-			if (null == user) {
-				user = new User(email);
-				saveUser(user);
-				voting.getVoters().add(user);
+			Voter voter = findVoterByEmail(email);
+			if (null == voter) {
+				voter = new Voter(email);
+				saveVoter(voter);
+				voting.getVoters().add(voter);
 				saveVoting(voting);
 			}
 
 			String text = "Hallöle!\nDu wurdest zu einer Abstimmung eingeladen: ";
-			text += buildUrl(invitation.getVotingId(), user.getId().toString());
+			text += buildUrl(invitation.getVotingId(), voter.getId().toString());
 			mailService.sendSimpleMessage(email, "Abstimmung Einladung", text);
 		}
 	}
@@ -165,34 +165,34 @@ public class Service {
 		return props.getClient().getUrl() + ":" + props.getClient().getPort() + "/votings/" + votingId + voterId; 
 	}
 
-	public User addUser(AddUserInput input) throws EntityExistsException {
+	public Voter addVoter(AddVoterInput input) throws EntityExistsException {
 		Voting voting = findVoting(input.getVotingId());
 		boolean emailExists = voting.getVoters().stream().anyMatch(v -> v.getEmail().equals(input.getEmail()));
 		if (emailExists) {
 			throw new EntityExistsException();
 		}
-		User user = new User(input.getName(), input.getEmail());
-		userRepo.save(user);
-		voting.getVoters().add(user);
+		Voter voter = new Voter(input.getName(), input.getEmail());
+		voterRepo.save(voter);
+		voting.getVoters().add(voter);
 		votingRepo.save(voting);
-		return user;
+		return voter;
 	}
 
-	public void changeUserName(ChangeUserNameInput input) {
+	public void changeVoterName(ChangeVoterNameInput input) {
 		Voting voting = findVoting(input.getVotingId());
-		// we are only allowed to change the name if the user belongs to the voting
-		User user = findUserInVoting(voting, input.getUserId());
-		user.setName(input.getName());
-		userRepo.save(user);
+		// we are only allowed to change the name if the voter belongs to the voting
+		Voter voter = findVoterInVoting(voting, input.getVoterId());
+		voter.setName(input.getName());
+		voterRepo.save(voter);
 	}
 
 	// https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
 	@Transactional
 	public Voting createVoting(CreateVotingInput input) {
 		Voting v = new Voting();
-		User user = new User(input.getCreatorName(), input.getCreatorEmail());
-		userRepo.save(user);
-		v.setCreator(user);
+		Voter voter = new Voter(input.getCreatorName(), input.getCreatorEmail());
+		voterRepo.save(voter);
+		v.setCreator(voter);
 		v.setName(input.getVotingName());
 		v.setDescription(input.getDescription());
 		List<Option> options = new ArrayList<>();
@@ -204,8 +204,8 @@ public class Service {
 		return v;
 	}
 
-	private User findUserInVoting(Voting voting, String userId) {
-		return voting.getVoters().stream().filter(x -> x.getId().toString().equals(userId)).findFirst().get();
+	private Voter findVoterInVoting(Voting voting, String voterId) {
+		return voting.getVoters().stream().filter(x -> x.getId().toString().equals(voterId)).findFirst().get();
 	}
 
 	@Transactional
@@ -221,12 +221,12 @@ public class Service {
 			sb.append(o.getName()).append("\n");
 		}
 		sb.append("- Voters ------------------------------------").append("\n");
-		for (User voter:v.getVoters()) {
-			User user = userRepo.findOne(Example.of(voter)).get();
-			sb.append(user.getId()).append(" | ")
-			.append(user.getCreationDateTime()).append(" | ")
-			.append(user.getName()).append(" | ")
-			.append(user.getEmail()).append("\n");
+		for (Voter voter:v.getVoters()) {
+			Voter voter2 = voterRepo.findOne(Example.of(voter)).get();
+			sb.append(voter2.getId()).append(" | ")
+			.append(voter2.getCreationDateTime()).append(" | ")
+			.append(voter2.getName()).append(" | ")
+			.append(voter2.getEmail()).append("\n");
 		}
 		sb.append("=============================================").append("\n");
 		return sb.toString();
